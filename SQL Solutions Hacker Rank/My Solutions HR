@@ -1,0 +1,171 @@
+select CITY from Station where Lower(SUBSTR(city,1,1)) in ('a','e','i','o','u');
+
+select Distinct(CITY) from Station where Lower(SUBSTR(city,-1,1)) in ('a','e','i','o','u');
+
+select Distinct(CITY) from Station where Lower(SUBSTR(city,-1,1)) in ('a','e','i','o','u')
+and Lower(SUBSTR(city,1,1)) in ('a','e','i','o','u');
+
+SHOW SUBSTR('abcdefg',3,4) 
+cdef
+
+SHOW SUBSTR('abcdefg',-5,4) 
+cdef
+
+
+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
+
+select round((abs(a-c)+abs(b-d)),4) from (
+select MIN (LAT_N) a , MIN(LONG_W) b, MAX(LAT_N) c , MAX(LONG_W) d from STATION);
+
+round(Long_W,4)
+SELECT ROUND(abs((MAX(LONG_W) - MAX(LAT_N)))+ABS((MIN(LAT_N)-MIN(LONG_W))),4)
+
+My sql server works
+SELECT FORMAT(ABS(MIN(LAT_N)-MAX(LAT_N))+ABS(MIN(LONG_W)-MAX(LONG_W)),'F4') FROM STATION;
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
+
+with A as (
+Select S.Hacker_id H ,count(S.Challenge_id) C  from 
+Submissions S  Join Challenges C on S.challenge_id = C.Challenge_id 
+Join Difficulty D on C.difficulty_level = D.difficulty_level 
+Where S.Score = D.score  
+group by S.Hacker_id having count(S.Challenge_id)>1 ) 
+select A.H,HSL.name from A join Hackers HSL on A.H = HSL.hacker_id  order by C DESC,A.H ASC;
+
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+with STG as (
+select W.id A,WP.age B,W.coins_needed C,W.power D,row_number()over(Partition by WP.age,W.power order by W.coins_needed ) rn 
+from Wands W left join Wands_Property WP on W.code = WP.code 
+where WP.is_evil = 0 order by W.power DESC,WP.age DESC) select A,B,C,D from STG where rn =1 ;  
+
+
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+
+with STG as (
+select C.hacker_id Ha,H.name N,count(C.challenge_id) Ch from Challenges C join Hackers H on C.Hacker_id = H.Hacker_id group by C.hacker_id,H.name), 
+STG2 as (select Ch,count(HA) cha from STG group by Ch)
+select Ha,N,Ch from STG where Ch in (select Ch from STG2 where cha =1) or Ch = (select Max(ch)from STG) order by Ch desc, Ha;
+
+
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+
+
+with STG as (
+select Hacker_id Ha,Challenge_id Su,row_number()over(Partition by  Hacker_id,Challenge_id order by Score DESC)rn,Score S from Submissions), 
+STG2 as (select ha,Sum(S) Sc from STG where rn =1  group by Ha), STG3 as (select STG2.ha,H.name,STG2.Sc 
+from STG2 join hackers H on STG2.ha = H.hacker_id  where Sc != 0 order by STG2.Sc DESC,STG2.ha asc) Select * from STG3;
+
+
++_+_+_+_+_+_+_+_+_+_
+select ST.NAME from Friends F join Packages S on F.ID = S.id join Packages S2 on F.Friend_ID = S2.ID 
+join Students ST on ST.ID = F.ID where S2.salary> S.salary order by S2.Salary asc;
+
+
+
++_+_+_+_+_+_+_+_+_+_+_+_+_
+with FN as (
+select row_number()over(order by X)rn,X,Y from Functions) select Distinct(FN1.X),FN1.Y from FN FN1 join FN FN2 on 
+FN1.rn != FN2.rn where FN1.X = FN2.Y and FN1.Y=FN2.X and FN1.X <= FN1.Y  order by FN1.X;
+
+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+Select Round(Sum(LAT_N),2),Round(Sum(LONG_W),2)from STATION;
+
++_+_+_+_+_+_+_+_+_+_+_+_+_+
+Select round(Sum(LAT_N),4) from STATION Where LAT_N Between 38.7880 and 137.2345;
+
+
++_+_+__+_+_+_+_+_+_+_+_+_+_+_+__
+with candidates as (select rownum num from dual connect by level < 1001), 
+divisors as (select num from candidates where 1 < num and num < 501), 
+multiples as (select distinct d.num*e.num num from divisors d, divisors e where d.num < 1000/e.num + 1), primes 
+as (select num from candidates where num > 1 minus select num from multiples) select listagg (num, '&') within group (order by num) from primes;
+
++_+_+_+_+_+_+_+__+
+with STG as (
+select rownum num from dual connect by level < 21 order by num desc)
+select Rpad('* ',num*2-1,'* ') from STG;
+
++_+_+_+_+_+_+_+_+_+_+_+_+_+__
+Select name || '(' || SUBSTR(Occupation,1,1) || ')' from Occupations order by name;
+
+select 'There are a total of ' || Count(*)||' ' || lower(Occupation) || 's.' from Occupations group by Occupation order by Count(*),Occupation;
+
+
+
++_+_+_+_+_+_+_+_+_+_
+
+SELECT
+   MIN(o.Doctor),MIN(o.Professor),MIN(o.Singer),MIN(o.Actor)
+FROM
+    (SELECT
+        CASE WHEN occupation='Doctor' THEN @d:=@d+1
+             WHEN occupation='Professor' THEN @p:=@p+1
+             WHEN occupation='Singer' THEN @s:=@s+1
+             WHEN occupation='Actor' THEN @a:=@a+1 END AS row,
+        CASE WHEN occupation='Doctor' THEN name END AS Doctor,
+        CASE WHEN occupation='Professor' THEN name END AS Professor,
+        CASE WHEN occupation='Singer' THEN name END AS Singer,
+        CASE WHEN occupation='Actor' THEN name END AS Actor
+     FROM occupations JOIN (SELECT @d:=0, @p:=0, @s:=0,@a:=0) AS r 
+     ORDER BY name) o
+GROUP BY row;
+
+_+_+_+_+_+_+_+_+_+_+_+_+_+_+__
+
+Select N, Case when N in (select Distinct(P) from BST) and P is not null then 'Inner' when P is not null then 'Leaf' 
+when P is null then 'Root' else 'inval' end from BST order by N;
+
+
+
+
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+__
+
+With LM as (select Count(Distinct(Lead_manager_code)) LMCT,Company_code LMCD 
+from Lead_manager group by Company_code) 
+, SM as (select Count(Distinct(Senior_manager_code)) SMCT,Company_code SMCD 
+from Senior_manager group by Company_code)
+, JM as (select Count(Distinct(manager_code)) JMCT,Company_code JMCD 
+from manager group by Company_code)
+, EM as (select Count(Distinct(Employee_code)) EMCT,Company_code EMCD 
+from Employee group by Company_code)
+select C.Company_code,C.Founder,LM.LMCT,SM.SMCT,JM.JMCT,EM.EMCT from Company C 
+join LM on C.Company_code = LM.LMCD 
+join SM on C.Company_code = SM.SMCD 
+join JM on C.Company_code = JM.JMCD 
+join EM on C.Company_code = EM.EMCD order by C.Company_code ;
+
+
+
+
++_+_+_+_+_+_+_+_+_+_+_+_+__
+
+with STG as (
+select Task_ID, Start_Date, End_Date ,  
+Lead(Start_date,1) over (Order by Start_date) - End_date  Flag from Projects), 
+STG2 as (select STG.*, Case when Lag(STG.FLAG,1) over (Order by Start_date) > 0 or
+Lag(STG.FLAG,1) over (Order by Start_date) is null then 'FST' When STG.FLAG > 0 then 'end' 
+else 'Chill' end FLG2 , Case when Lead(STG.FLAG,1) over (Order by Start_date) >= 0 
+and STG.FLAG > 0 or STG.FLAG is null then 'end' else 'cnted' end FLG3
+  from STG),STG4 as (
+    Select Start_date, Row_number() over(Order by Start_date) rn from STG2 where FLG2 = 'FST')
+    , STG5 as (Select End_date, Row_number() over(Order by END_DATE) rn  
+	from STG2 where FLG2 = 'end' or FLG3='end') select STG4.Start_date,STG5.END_Date 
+	from STG4 join STG5 on STG4.rn = stg5.rn order by STG5.END_Date - STG4.Start_date,STG4.Start_date   ;
+
+
++_+_+_+_+_+_+
+	
+	
+with STG as (
+select Task_ID, Start_Date, End_Date ,  
+Lead(Start_date,1) over (Order by Start_date) - End_date  Flag from Projects), 
+STG2 as (select STG.*, Case when Lag(STG.FLAG,1) over (Order by Start_date) > 0 or
+Lag(STG.FLAG,1) over (Order by Start_date) is null then 'FST' When STG.FLAG > 0 then 'end' 
+else 'Chill' end FLG2 , Case when Lead(STG.FLAG,1) over (Order by Start_date) >= 0 
+and STG.FLAG > 0 or STG.FLAG is null then 'end' else 'cnted' end FLG3
+  from STG),STG4 as (
+    Select Start_date, Row_number() over(Order by Start_date) rn from STG2 where FLG2 = 'FST')
+    , STG5 as (Select End_date, Row_number() over(Order by END_DATE) rn  
+	from STG2 where FLG2 = 'end' or FLG3='end') select STG4.Start_date,STG5.END_Date 
+	from STG4 join STG5 on STG4.rn = stg5.rn order by STG5.END_Date - STG4.Start_date,STG4.Start_date   ;
+	
+	

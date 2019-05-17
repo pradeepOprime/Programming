@@ -1,0 +1,32 @@
+IMP SQL functions
+
+ORACLE
+Lower(SUBSTR(city,1,1))
+
+SHOW SUBSTR('abcdefg',3,4) 
+cdef
+
+SHOW SUBSTR('abcdefg',-5,4) 
+cdef
+
+Round(number,precision)
+abs(-5) => 5
+
++_+_+_+_+_+_
+oracel
+power (5,2) => 25
+
+Mysql pow / POWER (5,2)
+
++_+_+_+_+_+_+_+_+_+___
+
+sqrt (25) => 5
+
+
++_+_+_+_+___
+Floor(number)
+CEIL
++_+_+_+_+_
+TO_NUMBER
+TO_CHAR
+Replace(str,SBSTR,replaceSTR)
